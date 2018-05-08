@@ -1218,7 +1218,7 @@ function init_paypal_adaptive() {
         function generate_transaction_log_html() {
             global $woocommerce;
 
-            $get_order_statuses = $woocommerce->version < 2.2 ? fppap_get_order_statuses() : wc_get_order_statuses();
+            $get_order_statuses = $woocommerce->version < 2.2 ? wf_paypal_get_order_statuses() : wc_get_order_statuses();
 
             $args = array(
                 'post_type' => 'shop_order',
@@ -1410,28 +1410,28 @@ function init_paypal_adaptive() {
                         }
                     }
                 } elseif ("enable_category" == get_post_meta($items['product_id'], "_enable_wf_paypal_adaptive", true)) {
-                    $fppap_product_category = wp_get_post_terms($items['product_id'], 'product_cat');
+                    $wf_paypal_product_category = wp_get_post_terms($items['product_id'], 'product_cat');
 
-                    $category_count = count($fppap_product_category);
+                    $category_count = count($wf_paypal_product_category);
                     if ($category_count > 0 && 1 >= $category_count) {
-                        $categ_meta = get_metadata('woocommerce_term', $fppap_product_category[0]->term_id);
+                        $categ_meta = get_metadata('woocommerce_term', $wf_paypal_product_category[0]->term_id);
                         for ($i = 1; $i <= 6; $i++) {
-                            if ("yes" == get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_enable', true)) {
-                                if (array_key_exists(get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true), $receivers_key_value)) {
-                                    $previous_amount = $receivers_key_value[get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)];
-                                    $x_share = ($order->get_line_total($items) * get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_percent', true)) / 100;
+                            if ("yes" == get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_enable', true)) {
+                                if (array_key_exists(get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true), $receivers_key_value)) {
+                                    $previous_amount = $receivers_key_value[get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)];
+                                    $x_share = ($order->get_line_total($items) * get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_percent', true)) / 100;
                                     $calculated = $previous_amount + $x_share;
-                                    $receivers_key_value[get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)] = $calculated;
+                                    $receivers_key_value[get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)] = $calculated;
                                 } else {
-                                    $x_share = ($order->get_line_total($items) * get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_percent', true)) / 100;
-                                    $receivers_key_value[get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)] = $x_share;
+                                    $x_share = ($order->get_line_total($items) * get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_percent', true)) / 100;
+                                    $receivers_key_value[get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true)] = $x_share;
                                 }
                             }
                         }
                     } else {
                         $percentagecalculator = array();
-                        if (is_array($fppap_product_category)) {
-                            foreach ($fppap_product_category as $each_product_category) {
+                        if (is_array($wf_paypal_product_category)) {
+                            foreach ($wf_paypal_product_category as $each_product_category) {
                                 $categ_meta = get_metadata('woocommerce_term', $each_product_category->term_id);
                                 for ($i = 1; $i <= 6; $i++) {
                                     if ("yes" == @get_woocommerce_term_meta($each_product_category->term_id, '_wf_paypal_rec_' . $i . '_enable', true)) {
@@ -1827,7 +1827,7 @@ function init_paypal_adaptive() {
      * 
      */
 
-    function fppap_add_validation_script() {
+    function wf_paypal_add_validation_script() {
         global $woocommerce;
         if (isset($_GET['section'])) {
             if ($_GET['section'] == 'wf-paypal-adaptive-split-payment' || $_GET['section'] == 'wf_paypal_adaptive') {
@@ -1884,65 +1884,65 @@ function init_paypal_adaptive() {
 
                         });
                         jQuery('#woocommerce_wf_paypal_adaptive_pri_r_paypal_enable').attr('checked', 'checked');
-                        var fppap_enable = [];
+                        var wf_paypal_enable = [];
                         for (var i = 1; i <= 5; i++) {
-                            fppap_enable[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_paypal_enable');
+                            wf_paypal_enable[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_paypal_enable');
                         }
 
                         //enable/disable event handle for secondary receiver
                         for (var k = 1; k <= 5; k++) {
-                            if (fppap_enable[k].is(":checked")) {
-                                fppap_enable[k].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[k].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                            if (wf_paypal_enable[k].is(":checked")) {
+                                wf_paypal_enable[k].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[k].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[k].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[k].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[k].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[k].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         }
 
-                        fppap_enable[1].change(function () {
-                            if (fppap_enable[1].is(":checked")) {
-                                fppap_enable[1].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[1].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                        wf_paypal_enable[1].change(function () {
+                            if (wf_paypal_enable[1].is(":checked")) {
+                                wf_paypal_enable[1].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[1].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[1].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[1].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[1].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[1].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[2].change(function () {
-                            if (fppap_enable[2].is(":checked")) {
-                                fppap_enable[2].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[2].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                        wf_paypal_enable[2].change(function () {
+                            if (wf_paypal_enable[2].is(":checked")) {
+                                wf_paypal_enable[2].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[2].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[2].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[2].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[2].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[2].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[3].change(function () {
-                            if (fppap_enable[3].is(":checked")) {
-                                fppap_enable[3].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[3].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                        wf_paypal_enable[3].change(function () {
+                            if (wf_paypal_enable[3].is(":checked")) {
+                                wf_paypal_enable[3].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[3].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[3].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[3].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[3].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[3].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[4].change(function () {
-                            if (fppap_enable[4].is(":checked")) {
-                                fppap_enable[4].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[4].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                        wf_paypal_enable[4].change(function () {
+                            if (wf_paypal_enable[4].is(":checked")) {
+                                wf_paypal_enable[4].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[4].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[4].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[4].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[4].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[4].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[5].change(function () {
-                            if (fppap_enable[5].is(":checked")) {
-                                fppap_enable[5].parent().parent().parent().parent().next().css('display', 'table-row');
-                                fppap_enable[5].parent().parent().parent().parent().next().next().css('display', 'table-row');
+                        wf_paypal_enable[5].change(function () {
+                            if (wf_paypal_enable[5].is(":checked")) {
+                                wf_paypal_enable[5].parent().parent().parent().parent().next().css('display', 'table-row');
+                                wf_paypal_enable[5].parent().parent().parent().parent().next().next().css('display', 'table-row');
                             } else {
-                                fppap_enable[5].parent().parent().parent().parent().next().css('display', 'none');
-                                fppap_enable[5].parent().parent().parent().parent().next().next().css('display', 'none');
+                                wf_paypal_enable[5].parent().parent().parent().parent().next().css('display', 'none');
+                                wf_paypal_enable[5].parent().parent().parent().parent().next().next().css('display', 'none');
                             }
                         });
                         function validateEmail(email)
@@ -1959,35 +1959,35 @@ function init_paypal_adaptive() {
                         }
                         //validation for 100% on submit and email validation etc
                         jQuery('#mainform').submit(function () {
-                            var fppap_pri_percent = jQuery('#woocommerce_wf_paypal_adaptive_pri_r_amount_percentage');
-                            var fppap_mail = [];
+                            var wf_paypal_pri_percent = jQuery('#woocommerce_wf_paypal_adaptive_pri_r_amount_percentage');
+                            var wf_paypal_mail = [];
                             for (var i = 1; i <= 5; i++) {
-                                fppap_mail[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_paypal_mail');
+                                wf_paypal_mail[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_paypal_mail');
                             }
-                            var fppap_percent = [];
+                            var wf_paypal_percent = [];
                             for (var i = 1; i <= 5; i++) {
-                                fppap_percent[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_amount_percentage');
+                                wf_paypal_percent[i] = jQuery('#woocommerce_wf_paypal_adaptive_sec_r' + i + '_amount_percentage');
                             }
 
-                            var fppap_total_percent = 0; //declare
+                            var wf_paypal_total_percent = 0; //declare
 
                             for (var j = 1; j <= 5; j++) {
-                                if (fppap_enable[j].is(":checked")) {
+                                if (wf_paypal_enable[j].is(":checked")) {
 
-                                    if (!validateEmail(fppap_mail[j].val())) {
+                                    if (!validateEmail(wf_paypal_mail[j].val())) {
                                         alert("Please Check Email address for enabled Receiver");
                                         return false;
                                     }
-                                    if (fppap_percent[j].val().length == 0) {
+                                    if (wf_paypal_percent[j].val().length == 0) {
                                         alert("Percentage should not be empty for enabled Receiver");
                                         return false;
                                     } else {
-                                        fppap_total_percent = fppap_total_percent + parseFloat(fppap_percent[j].val());
+                                        wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_percent[j].val());
                                     }
                                 }
                             }
-                            fppap_total_percent = fppap_total_percent + parseFloat(fppap_pri_percent.val());
-                            if (fppap_total_percent != 100) {
+                            wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_pri_percent.val());
+                            if (wf_paypal_total_percent != 100) {
                                 alert("The Sum of enabled Receiver percentages should be equal to 100");
                                 return false;
                             }
@@ -2003,9 +2003,9 @@ function init_paypal_adaptive() {
                 ?>
                 <script type="text/javascript">
                     jQuery(document).ready(function () {
-                        var fppap_enable = [];
+                        var wf_paypal_enable = [];
                         for (var i = 1; i <= 6; i++) {
-                            fppap_enable[i] = jQuery('#_wf_paypal_rec_' + i + '_enable');
+                            wf_paypal_enable[i] = jQuery('#_wf_paypal_rec_' + i + '_enable');
                         }
 
 
@@ -2024,35 +2024,35 @@ function init_paypal_adaptive() {
                         //validation for 100% on submit and email validation etc
                         jQuery('#edittag').submit(function () {
 
-                            var fppap_mail = [];
+                            var wf_paypal_mail = [];
                             for (var i = 1; i <= 6; i++) {
-                                fppap_mail[i] = jQuery('#_wf_paypal_rec_' + i + '_mail_id');
+                                wf_paypal_mail[i] = jQuery('#_wf_paypal_rec_' + i + '_mail_id');
                             }
-                            var fppap_percent = [];
+                            var wf_paypal_percent = [];
                             for (var i = 1; i <= 6; i++) {
-                                fppap_percent[i] = jQuery('#_wf_paypal_rec_' + i + '_percent');
+                                wf_paypal_percent[i] = jQuery('#_wf_paypal_rec_' + i + '_percent');
                             }
 
-                            var fppap_total_percent = 0; //declare
+                            var wf_paypal_total_percent = 0; //declare
 
                             for (var j = 1; j <= 6; j++) {
-                                if (fppap_enable[j].is(":checked")) {
+                                if (wf_paypal_enable[j].is(":checked")) {
 
-                                    if (!validateEmail(fppap_mail[j].val())) {
+                                    if (!validateEmail(wf_paypal_mail[j].val())) {
                                         alert("Please Check Email address for enabled Receiver");
                                         return false;
                                     }
-                                    if (fppap_percent[j].val().length == 0) {
+                                    if (wf_paypal_percent[j].val().length == 0) {
                                         alert("Percentage should not be empty for enabled Receiver");
                                         return false;
                                     } else {
-                                        fppap_total_percent = fppap_total_percent + parseFloat(fppap_percent[j].val());
+                                        wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_percent[j].val());
                                     }
                                 }
                             }
-                            console.log(fppap_total_percent);
-                            //fppap_total_percent = fppap_total_percent + parseFloat(fppap_pri_percent.val());
-                            if (fppap_total_percent != 100) {
+                            console.log(wf_paypal_total_percent);
+                            //wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_pri_percent.val());
+                            if (wf_paypal_total_percent != 100) {
                                 alert("The Sum of enabled Receiver percentages should be equal to 100");
                                 return false;
                             }
@@ -2072,81 +2072,81 @@ function init_paypal_adaptive() {
                     jQuery(document).ready(function () {
                         jQuery('#_wf_paypal_primary_1_enable').attr('checked', 'checked');
                         jQuery('#_wf_paypal_primary_1_enable').attr("disabled", true);
-                        var fppap_enable = [];
+                        var wf_paypal_enable = [];
                         for (var i = 1; i <= 5; i++) {
-                            fppap_enable[i] = jQuery('#_wf_paypal_sec_' + i + '_enable');
+                            wf_paypal_enable[i] = jQuery('#_wf_paypal_sec_' + i + '_enable');
                         }
 
                         if (jQuery('#_enable_wf_paypal_adaptive').val() != "enable_indiv") {
-                            jQuery('.fppap_split_indiv').css('display', 'none');
+                            jQuery('.wf_paypal_split_indiv').css('display', 'none');
                         } else {
-                            jQuery('.fppap_split_indiv').css('display', 'block');
+                            jQuery('.wf_paypal_split_indiv').css('display', 'block');
                         }
 
                         jQuery('#_enable_wf_paypal_adaptive').change(function () {
                             if (jQuery(this).val() != "enable_indiv") {
-                                jQuery('.fppap_split_indiv').css('display', 'none');
+                                jQuery('.wf_paypal_split_indiv').css('display', 'none');
                             } else {
-                                jQuery('.fppap_split_indiv').css('display', 'block');
+                                jQuery('.wf_paypal_split_indiv').css('display', 'block');
                             }
                         });
                         //enable/disable event handle for secondary receiver
                         for (var k = 1; k <= 5; k++) {
-                            if (fppap_enable[k].is(":checked")) {
+                            if (wf_paypal_enable[k].is(":checked")) {
                                 //                                 alert(jQuery('#_enable_wf_paypal_adaptive').val());
                                 if (jQuery('#_enable_wf_paypal_adaptive').val() == "enable_indiv") {
-                                    fppap_enable[k].parent().next().css('display', 'block');
-                                    fppap_enable[k].parent().next().next().css('display', 'block');
+                                    wf_paypal_enable[k].parent().next().css('display', 'block');
+                                    wf_paypal_enable[k].parent().next().next().css('display', 'block');
                                 }
                             } else {
-                                fppap_enable[k].parent().next().css('display', 'none');
-                                fppap_enable[k].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[k].parent().next().css('display', 'none');
+                                wf_paypal_enable[k].parent().next().next().css('display', 'none');
                             }
                         }
 
-                        fppap_enable[1].change(function () {
-                            if (fppap_enable[1].is(":checked")) {
-                                fppap_enable[1].parent().next().css('display', 'block');
-                                fppap_enable[1].parent().next().next().css('display', 'block');
+                        wf_paypal_enable[1].change(function () {
+                            if (wf_paypal_enable[1].is(":checked")) {
+                                wf_paypal_enable[1].parent().next().css('display', 'block');
+                                wf_paypal_enable[1].parent().next().next().css('display', 'block');
                             } else {
-                                fppap_enable[1].parent().next().css('display', 'none');
-                                fppap_enable[1].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[1].parent().next().css('display', 'none');
+                                wf_paypal_enable[1].parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[2].change(function () {
-                            if (fppap_enable[2].is(":checked")) {
-                                fppap_enable[2].parent().next().css('display', 'block');
-                                fppap_enable[2].parent().next().next().css('display', 'block');
+                        wf_paypal_enable[2].change(function () {
+                            if (wf_paypal_enable[2].is(":checked")) {
+                                wf_paypal_enable[2].parent().next().css('display', 'block');
+                                wf_paypal_enable[2].parent().next().next().css('display', 'block');
                             } else {
-                                fppap_enable[2].parent().next().css('display', 'none');
-                                fppap_enable[2].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[2].parent().next().css('display', 'none');
+                                wf_paypal_enable[2].parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[3].change(function () {
-                            if (fppap_enable[3].is(":checked")) {
-                                fppap_enable[3].parent().next().css('display', 'block');
-                                fppap_enable[3].parent().next().next().css('display', 'block');
+                        wf_paypal_enable[3].change(function () {
+                            if (wf_paypal_enable[3].is(":checked")) {
+                                wf_paypal_enable[3].parent().next().css('display', 'block');
+                                wf_paypal_enable[3].parent().next().next().css('display', 'block');
                             } else {
-                                fppap_enable[3].parent().next().css('display', 'none');
-                                fppap_enable[3].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[3].parent().next().css('display', 'none');
+                                wf_paypal_enable[3].parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[4].change(function () {
-                            if (fppap_enable[4].is(":checked")) {
-                                fppap_enable[4].parent().next().css('display', 'block');
-                                fppap_enable[4].parent().next().next().css('display', 'block');
+                        wf_paypal_enable[4].change(function () {
+                            if (wf_paypal_enable[4].is(":checked")) {
+                                wf_paypal_enable[4].parent().next().css('display', 'block');
+                                wf_paypal_enable[4].parent().next().next().css('display', 'block');
                             } else {
-                                fppap_enable[4].parent().next().css('display', 'none');
-                                fppap_enable[4].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[4].parent().next().css('display', 'none');
+                                wf_paypal_enable[4].parent().next().next().css('display', 'none');
                             }
                         });
-                        fppap_enable[5].change(function () {
-                            if (fppap_enable[5].is(":checked")) {
-                                fppap_enable[5].parent().next().css('display', 'block');
-                                fppap_enable[5].parent().next().next().css('display', 'block');
+                        wf_paypal_enable[5].change(function () {
+                            if (wf_paypal_enable[5].is(":checked")) {
+                                wf_paypal_enable[5].parent().next().css('display', 'block');
+                                wf_paypal_enable[5].parent().next().next().css('display', 'block');
                             } else {
-                                fppap_enable[5].parent().next().css('display', 'none');
-                                fppap_enable[5].parent().next().next().css('display', 'none');
+                                wf_paypal_enable[5].parent().next().css('display', 'none');
+                                wf_paypal_enable[5].parent().next().next().css('display', 'none');
                             }
                         });
                         function validateEmail(email)
@@ -2164,36 +2164,36 @@ function init_paypal_adaptive() {
                         //validation for 100% on submit and email validation etc
                         jQuery('#post').submit(function () {
 
-                            var fppap_pri_percent = jQuery('#_wf_paypal_primary_rec_percent');
-                            var fppap_mail = [];
+                            var wf_paypal_pri_percent = jQuery('#_wf_paypal_primary_rec_percent');
+                            var wf_paypal_mail = [];
                             for (var i = 1; i <= 5; i++) {
-                                fppap_mail[i] = jQuery('#_wf_paypal_sec_' + i + '_rec_mail_id');
+                                wf_paypal_mail[i] = jQuery('#_wf_paypal_sec_' + i + '_rec_mail_id');
                             }
-                            var fppap_percent = [];
+                            var wf_paypal_percent = [];
                             for (var i = 1; i <= 5; i++) {
-                                fppap_percent[i] = jQuery('#_wf_paypal_sec_' + i + '_rec_percent');
+                                wf_paypal_percent[i] = jQuery('#_wf_paypal_sec_' + i + '_rec_percent');
                             }
 
-                            var fppap_total_percent = 0; //declare
+                            var wf_paypal_total_percent = 0; //declare
                             if (jQuery('#_enable_wf_paypal_adaptive').length > 0) {
                                 if (jQuery('#_enable_wf_paypal_adaptive').val() == 'enable_indiv') {
                                     for (var j = 1; j <= 5; j++) {
-                                        if (fppap_enable[j].is(":checked")) {
+                                        if (wf_paypal_enable[j].is(":checked")) {
 
-                                            if (!validateEmail(fppap_mail[j].val())) {
+                                            if (!validateEmail(wf_paypal_mail[j].val())) {
                                                 alert("Please Check Email address for enabled Receiver");
                                                 return false;
                                             }
-                                            if (fppap_percent[j].val().length == 0) {
+                                            if (wf_paypal_percent[j].val().length == 0) {
                                                 alert("Percentage should not be empty for enabled Receiver");
                                                 return false;
                                             } else {
-                                                fppap_total_percent = fppap_total_percent + parseFloat(fppap_percent[j].val());
+                                                wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_percent[j].val());
                                             }
                                         }
                                     }
-                                    fppap_total_percent = fppap_total_percent + parseFloat(fppap_pri_percent.val());
-                                    if (fppap_total_percent != 100) {
+                                    wf_paypal_total_percent = wf_paypal_total_percent + parseFloat(wf_paypal_pri_percent.val());
+                                    if (wf_paypal_total_percent != 100) {
                                         alert("The Sum of enabled Receiver percentages should be equal to 100");
                                         return false;
                                     }
@@ -2208,7 +2208,7 @@ function init_paypal_adaptive() {
         }
     }
 
-    add_action('admin_head', 'fppap_add_validation_script');
+    add_action('admin_head', 'wf_paypal_add_validation_script');
 }
 
 add_action('plugins_loaded', 'init_paypal_adaptive');
@@ -2220,11 +2220,11 @@ add_action('plugins_loaded', 'init_paypal_adaptive');
  * 
  */
 
-function fppap_translate_file() {
+function wf_paypal_translate_file() {
     load_plugin_textdomain('wf-paypal-adaptive-split-payment', false, dirname(plugin_basename(__FILE__)) . '/languages');
 }
 
-add_action('plugins_loaded', 'fppap_translate_file');
+add_action('plugins_loaded', 'wf_paypal_translate_file');
 
 /*
  * 
@@ -2566,7 +2566,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_primary_1_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 1', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 1', 'wf-paypal-adaptive-split-payment')
             )
@@ -2576,7 +2576,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_primary_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 1 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 1 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2586,7 +2586,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_primary_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 1 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 1 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2596,7 +2596,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_sec_1_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 2', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 2', 'wf-paypal-adaptive-split-payment')
             )
@@ -2604,7 +2604,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_1_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 2 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 2 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2614,7 +2614,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_1_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 2 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 2 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2624,7 +2624,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_sec_2_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 3', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 3', 'wf-paypal-adaptive-split-payment')
             )
@@ -2632,7 +2632,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_2_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 3 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 3 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2642,7 +2642,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_2_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 3 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 3 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2652,7 +2652,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_sec_3_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 4', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 4', 'wf-paypal-adaptive-split-payment')
             )
@@ -2660,7 +2660,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_3_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 4 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 4 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2670,7 +2670,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_3_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 4 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 4 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2680,7 +2680,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_sec_4_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 5', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 5', 'wf-paypal-adaptive-split-payment')
             )
@@ -2688,7 +2688,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_4_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 5 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 5 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2698,7 +2698,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_4_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 5 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 5 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2708,7 +2708,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_checkbox(
             array(
                 'id' => '_wf_paypal_sec_5_enable',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Enable Receiver 6', 'wf-paypal-adaptive-split-payment'),
                 'description' => __('Enable Receiver 6', 'wf-paypal-adaptive-split-payment')
             )
@@ -2716,7 +2716,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_5_rec_mail_id',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 6 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 6 PayPal Mail',
                 'desc_tip' => 'true',
@@ -2726,7 +2726,7 @@ function wf_paypal_adaptive_tab_content() {
     woocommerce_wp_text_input(
             array(
                 'id' => '_wf_paypal_sec_5_rec_percent',
-                'wrapper_class' => 'fppap_split_indiv',
+                'wrapper_class' => 'wf_paypal_split_indiv',
                 'label' => __('Receiver 6 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
                 'placeholder' => 'Receiver 6 Payment Percentage',
                 'desc_tip' => 'true',
@@ -2816,7 +2816,7 @@ function fpap_remove_previous_add_new_product($product_id, $quantity) {
  * 
  */
 
-function fppap_cart_validation_for_rec_limit() {
+function wf_paypal_cart_validation_for_rec_limit() {
     global $woocommerce;
     $count = 0;
     $receivers = array();
@@ -2838,15 +2838,15 @@ function fppap_cart_validation_for_rec_limit() {
                 }
             }
         } elseif ("enable_category" == get_post_meta($items['product_id'], "_enable_wf_paypal_adaptive", true)) {
-            $fppap_product_category = wp_get_post_terms($items['product_id'], 'product_cat');
-            $categ_meta = get_metadata('woocommerce_term', $fppap_product_category[0]->term_id);
+            $wf_paypal_product_category = wp_get_post_terms($items['product_id'], 'product_cat');
+            $categ_meta = get_metadata('woocommerce_term', $wf_paypal_product_category[0]->term_id);
 
-            $categ_meta = get_woocommerce_term_meta($fppap_product_category[0]->term_id);
+            $categ_meta = get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id);
 
             for ($i = 1; $i <= 6; $i++) {
-                if ("yes" == get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_enable', true)) {
-                    if (!in_array(get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true), $receivers)) {
-                        $receivers[] = get_woocommerce_term_meta($fppap_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true);
+                if ("yes" == get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_enable', true)) {
+                    if (!in_array(get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true), $receivers)) {
+                        $receivers[] = get_woocommerce_term_meta($wf_paypal_product_category[0]->term_id, '_wf_paypal_rec_' . $i . '_mail_id', true);
                         $count++;
                     }
                 }
@@ -2875,7 +2875,7 @@ function fppap_cart_validation_for_rec_limit() {
     }
 }
 
-add_action('woocommerce_checkout_process', 'fppap_cart_validation_for_rec_limit');
+add_action('woocommerce_checkout_process', 'wf_paypal_cart_validation_for_rec_limit');
 
 /*
  * 
@@ -2883,7 +2883,7 @@ add_action('woocommerce_checkout_process', 'fppap_cart_validation_for_rec_limit'
  * 
  */
 
-function fppap_category_new_fields() {
+function wf_paypal_category_new_fields() {
     $term = '';
     for ($i = 1; $i <= 6; $i++) {
         ?>
@@ -2921,7 +2921,7 @@ function fppap_category_new_fields() {
     }
 }
 
-add_action('product_cat_add_form_fields', 'fppap_category_new_fields');
+add_action('product_cat_add_form_fields', 'wf_paypal_category_new_fields');
 
 /*
  * 
@@ -2930,7 +2930,7 @@ add_action('product_cat_add_form_fields', 'fppap_category_new_fields');
  * 
  */
 
-function fppap_category_edit_fields($term, $taxonomy) {
+function wf_paypal_category_edit_fields($term, $taxonomy) {
 
     for ($i = 1; $i <= 6; $i++) {
         ?>
@@ -2966,7 +2966,7 @@ function fppap_category_edit_fields($term, $taxonomy) {
     }
 }
 
-add_action('product_cat_edit_form_fields', 'fppap_category_edit_fields', 10, 2);
+add_action('product_cat_edit_form_fields', 'wf_paypal_category_edit_fields', 10, 2);
 
 /*
  * 
@@ -2974,7 +2974,7 @@ add_action('product_cat_edit_form_fields', 'fppap_category_edit_fields', 10, 2);
  * 
  */
 
-function fppap_category_save($term_id, $tt_id, $taxonomy) {
+function wf_paypal_category_save($term_id, $tt_id, $taxonomy) {
     for ($i = 1; $i <= 6; $i++) {
         if (isset($_POST['_wf_paypal_rec_' . $i . '_mail_id'])) {
             update_woocommerce_term_meta($term_id, '_wf_paypal_rec_' . $i . '_mail_id', esc_attr($_POST['_wf_paypal_rec_' . $i . '_mail_id']));
@@ -2988,7 +2988,7 @@ function fppap_category_save($term_id, $tt_id, $taxonomy) {
     }
 }
 
-function fppap_get_order_statuses() {
+function wf_paypal_get_order_statuses() {
 
     $order_statuses = array(
         'wc-pending' => _x('Pending Payment', 'Order status', 'woocommerce'),
@@ -3002,8 +3002,8 @@ function fppap_get_order_statuses() {
     return $order_statuses;
 }
 
-add_action('edit_term', 'fppap_category_save', 10, 3);
-add_action('created_term', 'fppap_category_save', 10, 3);
+add_action('edit_term', 'wf_paypal_category_save', 10, 3);
+add_action('created_term', 'wf_paypal_category_save', 10, 3);
 
 add_action('wp_ajax_wfpaypal_adaptive_bulk_action', array('WF_Paypal_Adaptive_Split_Payment', 'paypal_adaptive_bulk_selection'));
 add_action('add_meta_boxes', array('WF_Paypal_Adaptive_Split_Payment', 'add_custom_meta_box'));
