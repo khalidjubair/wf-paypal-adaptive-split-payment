@@ -6,7 +6,7 @@
  * 
  */
 
-class WF_Payment_Review_page {
+class WF_Payment_Review {
 
     public static function wf_pay_settings_for_shipping_address($pay_key, $order, $receivers_details) {
         $receiver_email = key($receivers_details);

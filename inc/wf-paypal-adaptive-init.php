@@ -1588,7 +1588,7 @@ function init_paypal_adaptive() {
                 if ("Success" == $jso->responseEnvelope->ack) {
                     $ack = "Success";
                     if ($this->shipping_details == 'show') {
-                        $result = FP_Paypal_Payment_Review_page::wf_pay_settings_for_shipping_address($jso->payKey, $order, $receivers_mail_amount);
+                        $result = WF_Payment_Review::wf_pay_settings_for_shipping_address($jso->payKey, $order, $receivers_mail_amount);
                         $pay_address_result = wf_get_cURL_adaptive_split_response($paypal_set_options_action_url, $headers_array, $result);
                         $result_jso = json_decode($pay_address_result);
                         $ack = $result_jso->responseEnvelope->ack;
