@@ -2553,110 +2553,199 @@ function wf_paypal_adaptive_tab_content() {
     }
 
     woocommerce_wp_select(
-            array(
-                'id' => '_enable_wf_paypal_adaptive',
-                'label' => __('Adaptive Payment', 'wf-paypal-adaptive-split-payment'),
-                'options' => array(
-                    'disable' => __('Use Global Settings', 'wf-paypal-adaptive-split-payment'),
-                    'enable_category' => __('Use Category Settings', 'wf-paypal-adaptive-split-payment'),
-                    'enable_indiv' => __('Use Product Settings', 'wf-paypal-adaptive-split-payment'),
-                )
+        array(
+            'id' => '_enable_wf_paypal_adaptive',
+            'label' => __('Adaptive Payment', 'wf-paypal-adaptive-split-payment'),
+            'options' => array(
+                'disable' => __('Use Global Settings', 'wf-paypal-adaptive-split-payment'),
+                'enable_category' => __('Use Category Settings', 'wf-paypal-adaptive-split-payment'),
+                'enable_indiv' => __('Use Product Settings', 'wf-paypal-adaptive-split-payment'),
             )
+        )
+    );
+
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_primary_1_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 1', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 1', 'wf-paypal-adaptive-split-payment')
+        )
     );
 
 
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_primary_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 1 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 1 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 1 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_primary_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 1 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 1 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 1 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_sec_1_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 2', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 2', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_1_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 2 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 2 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 2 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_1_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 2 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 2 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 2 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_sec_2_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 3', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 3', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_2_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 3 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 3 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 3 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_2_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 3 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 3 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 3 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_sec_3_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 4', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 4', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_3_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 4 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 4 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 4 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_3_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 4 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 4 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 4 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_sec_4_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 5', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 5', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_4_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 5 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 5 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 5 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_4_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 5 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 5 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 5 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_wf_paypal_sec_5_enable',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Enable Receiver 6', 'wf-paypal-adaptive-split-payment'),
+            'description' => __('Enable Receiver 6', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_5_rec_mail_id',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 6 PayPal Mail', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 6 PayPal Mail',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 6 PayPal Mail', 'wf-paypal-adaptive-split-payment')
+        )
+    );
+    woocommerce_wp_text_input(
+        array(
+            'id' => '_wf_paypal_sec_5_rec_percent',
+            'wrapper_class' => 'wf_paypal_split_indiv',
+            'label' => __('Receiver 6 Payment Percentage', 'wf-paypal-adaptive-split-payment'),
+            'placeholder' => 'Receiver 6 Payment Percentage',
+            'desc_tip' => 'true',
+            'description' => __('Enter Receiver 6 Payment Percentage', 'wf-paypal-adaptive-split-payment')
+        )
+    );
 
-    global $post;
+    echo '</div>';
+    echo '</div>';
 
-    $reward_fields = get_post_meta($post->ID, 'repeatable_paypal_emails', true);
-
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready(function( $ ){
-            $( '#add-row' ).on('click', function() {
-                var row = $( '.empty-row.screen-reader-text' ).clone(true);
-                row.removeClass( 'empty-row screen-reader-text' );
-                row.insertBefore( '#paypal-adaptive-repeater > div.paypal-email:last' );
-                return false;
-            });
-
-            $( '.remove-row' ).on('click', function() {
-                $(this).parents('.paypal-email').remove();
-                return false;
-            });
-            jQuery('.color-field').wpColorPicker();
-        });
-    </script>
-
-    <div id="paypal-adaptive-repeater">
-        <?php
-        $i = 1;
-        if ( $reward_fields ) :
-
-            foreach ( $reward_fields as $field ) {
-
-                ?>
-                <div class="options_group paypal-email">
-                <p class="form-field _wf_paypal_rec_mail_id wf_paypal_split_indiv">
-                    <label for="_wf_paypal_rec_mail_id">Receiver <?php echo $i;?> PayPal Mail</label>
-                    <input type="text" class="short" name="_wf_paypal_rec_mail_id[]" value="<?php if(isset($field['_wf_paypal_rec_mail_id']) && $field['_wf_paypal_rec_mail_id'] != '') echo esc_attr( $field['_wf_paypal_rec_mail_id'] ); ?>" />
-                </p>
-                <p class="form-field _wf_paypal_rec_percent wf_paypal_split_indiv">
-                    <label for="_wf_paypal_rec_percent">Receiver <?php echo $i;?> Payment Percentage</label>
-                    <input type="text" class="short" name="_wf_paypal_rec_percent[]" value="<?php if(isset($field['_wf_paypal_rec_percent']) && $field['_wf_paypal_rec_percent'] != '') echo esc_attr( $field['_wf_paypal_rec_percent'] ); ?>" />
-                </p>
-                <p class="form-field "><a class="button remove-row" href="#">Remove</a></p>
-
-                </div><?php
-                $i++;
-            }
-
-        else:
-            ?><div class="options_group reward-item"><?php
-            ?>
-            <p class="form-field _wf_paypal_rec_mail_id wf_paypal_split_indiv">
-                <label for="_wf_paypal_rec_mail_id">Receiver <?php echo $i;?> PayPal Mail</label>
-                <input type="text" class="short" name="_wf_paypal_rec_mail_id[]" />
-            </p>
-            <p class="form-field _wf_paypal_rec_percent wf_paypal_split_indiv">
-                <label for="_wf_paypal_rec_percent">Receiver <?php echo $i;?> Payment Percentage</label>
-                <input type="text" class="short" name="_wf_paypal_rec_percent[]" />
-            </p>
-            <p class="form-field "><a class="button remove-row" href="#">Remove</a></p>
-
-
-            </div><?php
-        endif;
-
-        ?>
-
-
-        <div class="options_group reward-item empty-row screen-reader-text">
-            <p class="form-field _wf_paypal_rec_mail_id wf_paypal_split_indiv">
-                <label for="_wf_paypal_rec_mail_id">Receiver <?php echo $i;?> PayPal Mail</label>
-                <input type="text" class="short" name="_wf_paypal_rec_mail_id[]" />
-            </p>
-            <p class="form-field _wf_paypal_rec_percent wf_paypal_split_indiv">
-                <label for="_wf_paypal_rec_percent">Receiver <?php echo $i;?> Payment Percentage</label>
-                <input type="text" class="short" name="_wf_paypal_rec_percent[]" />
-            </p>
-            <p class="form-field "><a class="button remove-row" href="#">Remove</a></p>
-
-        </div>
-
-   </div>
-    <p><a id="add-row" class="button" href="#">Add another</a></p>
-   </div>
-   </div>
-
-    <?php
 }
 
+
 /*
- * 
+ *
  * Save Product Page Meta Emails.
- * 
- * 
+ *
+ *
  */
 
 function wf_paypal_adaptive_save_product_meta($post_id) {
@@ -2696,11 +2785,11 @@ add_action( 'woocommerce_product_data_panels', 'wf_paypal_adaptive_tab_content' 
 add_action('woocommerce_process_product_meta', 'wf_paypal_adaptive_save_product_meta');
 
 /*
- * 
- * check if already an individual split is present or not 
+ *
+ * check if already an individual split is present or not
  * if present then don't allow the adding
  * remove previous cart content, if adding is a individual split
- * 
+ *
  */
 
 function wf_paypal_remove_previous_add_new_product($product_id, $quantity) {
@@ -2724,10 +2813,10 @@ function wf_paypal_remove_previous_add_new_product($product_id, $quantity) {
 //add_filter('woocommerce_add_to_cart_validation', 'wf_paypal_remove_previous_add_new_product', 10, 2);
 
 /*
- * 
- * take mail first product page or category or global. 
- * 
- * 
+ *
+ * take mail first product page or category or global.
+ *
+ *
  */
 
 function wf_paypal_cart_validation_for_rec_limit() {
