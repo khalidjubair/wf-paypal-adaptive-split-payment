@@ -18,7 +18,7 @@ class WF_Payment_Review_page {
             $address1 = $order->billing_address_1;
             $address2 = $order->billing_address_2;
             $postcode = $order->billing_postcode;
-            $state = self:: fppay_get_paypal_state($order->billing_country, $order->billing_state);
+            $state = self:: wf_get_paypal_state($order->billing_country, $order->billing_state);
         } else {
             $first_name = $order->shipping_first_name;
             $last_name = $order->shipping_last_name;
@@ -27,7 +27,7 @@ class WF_Payment_Review_page {
             $address1 = $order->shipping_address_1;
             $address2 = $order->shipping_address_2;
             $postcode = $order->shipping_postcode;
-            $state = self::fppay_get_paypal_state($order->shipping_country, $order->shipping_state);
+            $state = self::wf_get_paypal_state($order->shipping_country, $order->shipping_state);
         }
 
         $send_array['requestEnvelope.errorLanguage'] = "en_US";
@@ -47,7 +47,7 @@ class WF_Payment_Review_page {
         return $send_array;
     }
 
-    public static function fppay_get_paypal_state($cc, $state) {
+    public static function wf_get_paypal_state($cc, $state) {
         $states = WC()->countries->get_states($cc);
         if (isset($states[$state])) {
             return $states[$state];
